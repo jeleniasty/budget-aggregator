@@ -10,6 +10,8 @@ import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.Optional;
 
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.TRANSACTION_DATE;
+
 @Component
 public class MonthFilter implements FilterProvider {
     @Override
@@ -29,6 +31,6 @@ public class MonthFilter implements FilterProvider {
                 .atOffset(ZoneOffset.UTC)
                 .toInstant();
 
-        return Optional.of(Criteria.where("transactionDate").gte(start).lte(end));
+        return Optional.of(Criteria.where(TRANSACTION_DATE).gte(start).lte(end));
     }
 }

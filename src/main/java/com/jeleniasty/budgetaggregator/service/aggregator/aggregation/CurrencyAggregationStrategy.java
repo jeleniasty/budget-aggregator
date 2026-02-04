@@ -9,7 +9,15 @@ import org.springframework.data.mongodb.core.aggregation.DateOperators;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.AMOUNT;
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.CATEGORY;
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.CURRENCY;
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.IBAN;
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.TRANSACTION_DATE;
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.TRANSACTION_TYPE;
 
 @Service
 public class CurrencyAggregationStrategy implements AggregationStrategy{
@@ -17,24 +25,24 @@ public class CurrencyAggregationStrategy implements AggregationStrategy{
     @Override
     public GroupOperation buildGroup(AggregationParameters params) {
         var creditExpression = ConditionalOperators.when(
-                        org.springframework.data.mongodb.core.query.Criteria.where("transactionType")
+                        Criteria.where(TRANSACTION_TYPE)
                                 .is(TransactionType.CREDIT))
-                .thenValueOf("amount").otherwise(0);
+                .thenValueOf(AMOUNT).otherwise(0);
 
         var debitExpression = ConditionalOperators.when(
-                        org.springframework.data.mongodb.core.query.Criteria.where("transactionType")
+                        Criteria.where(TRANSACTION_TYPE)
                                 .is(TransactionType.DEBIT))
-                .thenValueOf("amount").otherwise(0);
+                .thenValueOf(AMOUNT).otherwise(0);
 
-        GroupOperation group = Aggregation.group("currency")
+        GroupOperation group = Aggregation.group(CURRENCY)
                 .sum(creditExpression).as("inflow")
                 .sum(debitExpression).as("outflow")
                 .count().as("transactionCount")
-                .first("category").as("category")
-                .first("transactionDate").as("monthDate");
+                .first(CATEGORY).as(CATEGORY)
+                .first(TRANSACTION_DATE).as("monthDate");
 
         if (params.iban() != null) {
-            group = group.first("iban").as("encryptedIban");
+            group = group.first(IBAN).as(IBAN);
         }
 
         return group;    }
@@ -42,13 +50,14 @@ public class CurrencyAggregationStrategy implements AggregationStrategy{
     @Override
     public ProjectionOperation buildProjection(AggregationParameters params) {
         return Aggregation.project("inflow", "outflow", "transactionCount")
-                .and("_id").as("currency")
-                .and("encryptedIban").as("iban")
+                .and("_id").as(CURRENCY)
+                .and(IBAN).as(IBAN)
                 .and(DateOperators.dateOf("monthDate").toString("%Y-%m")).as("month")
-                .andExpression("inflow - outflow").as("balance");    }
+                .andExpression("inflow - outflow").as("balance");
+    }
 
     @Override
     public SortOperation buildSort(AggregationParameters params) {
-        return Aggregation.sort(Sort.Direction.DESC, "currency");
+        return Aggregation.sort(Sort.Direction.DESC, CURRENCY);
     }
 }

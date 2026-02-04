@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.IBAN_HASH;
+
 @Component
 @RequiredArgsConstructor
 public class IbanFilter implements FilterProvider {
@@ -17,6 +19,6 @@ public class IbanFilter implements FilterProvider {
     public Optional<Criteria> build(AggregationParameters params) {
         return Optional.ofNullable(params.iban())
                 .map(encryptionService::generateBlindIndex)
-                .map(hash -> Criteria.where("ibanHash").is(hash));
+                .map(hash -> Criteria.where(IBAN_HASH).is(hash));
     }
 }

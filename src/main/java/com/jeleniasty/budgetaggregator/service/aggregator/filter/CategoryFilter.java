@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.Fields.CATEGORY;
+
 @Component
 public class CategoryFilter implements FilterProvider{
     public Optional<Criteria> build(AggregationParameters params) {
         return Optional.ofNullable(params.category())
-                .map(category -> Criteria.where("category").is(category));
+                .map(category -> Criteria.where(CATEGORY).is(category));
     }
 }

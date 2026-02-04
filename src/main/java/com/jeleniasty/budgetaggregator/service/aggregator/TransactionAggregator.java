@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.TRANSACTIONS_DOCUMENT;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionAggregator {
@@ -55,7 +57,7 @@ public class TransactionAggregator {
                         .build()
         );
 
-        var results = mongoTemplate.aggregate(aggregation, "transactions", AggregationRaw.class)
+        var results = mongoTemplate.aggregate(aggregation, TRANSACTIONS_DOCUMENT, AggregationRaw.class)
                 .getMappedResults();
 
         return results.stream()

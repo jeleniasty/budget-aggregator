@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Document("transactions")
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.TRANSACTIONS_DOCUMENT;
+
+@Document(TRANSACTIONS_DOCUMENT)
 @Getter
 @Setter
 @CompoundIndex(
@@ -23,6 +25,8 @@ import java.time.Instant;
         def = "{'ibanHash': 1, 'category': 1, 'transactionDate': -1, 'currency': 1}"
 )
 public class Transaction extends AuditableDocument {
+    public static final String TRANSACTIONS_DOCUMENT = "transactions";
+
     @Id
     private String id;
     private String bankId;
@@ -47,5 +51,19 @@ public class Transaction extends AuditableDocument {
         this.transactionType = transactionType;
         this.amount = amount;
         this.importId = importId;
+    }
+
+    public static final class Fields {
+        public static final String ID = "id";
+        public static final String BANK_ID = "bankId";
+        public static final String REFERENCE_ID = "referenceId";
+        public static final String IBAN = "iban";
+        public static final String IBAN_HASH = "ibanHash";
+        public static final String TRANSACTION_DATE = "transactionDate";
+        public static final String CURRENCY = "currency";
+        public static final String CATEGORY = "category";
+        public static final String TRANSACTION_TYPE = "transactionType";
+        public static final String AMOUNT = "amount";
+        public static final String IMPORT_ID = "importId";
     }
 }
