@@ -13,8 +13,10 @@ spring:
   data:
     mongodb:
       auto-index-creation: true
+      connect-timeout: 10000
+      socket-timeout: 10000
   mongodb:
-    uri: mongodb://localhost:27017/budget_aggregator
+    uri: mongodb://mongo:27017/budget_aggregator?replicaSet=rs0
 security:
   encryption:
     aes:
