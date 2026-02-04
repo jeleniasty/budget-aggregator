@@ -1,25 +1,24 @@
 package com.jeleniasty.budgetaggregator.service.imports;
 
 import com.jeleniasty.budgetaggregator.exception.ImportMetadataException;
-import com.jeleniasty.budgetaggregator.model.ImportDetailsDto;
-import com.jeleniasty.budgetaggregator.model.ImportResponse;
-import com.jeleniasty.budgetaggregator.model.ImportStatus;
 import com.jeleniasty.budgetaggregator.model.events.ImportStatusUpdateEvent;
+import com.jeleniasty.budgetaggregator.model.imports.ImportCreatedEvent;
+import com.jeleniasty.budgetaggregator.model.imports.ImportDetailsDto;
+import com.jeleniasty.budgetaggregator.model.imports.ImportResponse;
+import com.jeleniasty.budgetaggregator.model.imports.ImportStatus;
 import com.jeleniasty.budgetaggregator.persistence.importjob.ImportMetadata;
 import com.jeleniasty.budgetaggregator.persistence.importjob.ImportMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import static com.jeleniasty.budgetaggregator.model.ImportStatus.PROCESSING;
+import static com.jeleniasty.budgetaggregator.model.imports.ImportStatus.PROCESSING;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ import static com.jeleniasty.budgetaggregator.model.ImportStatus.PROCESSING;
 public class ImportService {
 
     private final ImportMetadataRepository importMetadataRepository;
-    private final TransactionImporter importer;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ImportResponse importFile(MultipartFile file) {
@@ -43,13 +42,9 @@ public class ImportService {
             return new ImportResponse(importMetadata.getId(), importMetadata.getFileName(), importMetadata.getStatus());
         }
 
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                Thread.ofVirtual().name("transactions-import-" + importMetadata.getId())
-                        .start(() -> importer.importTransactions(importMetadata.getId(), new ByteArrayInputStream(content)));
-            }
-        });
+        eventPublisher.publishEvent(
+                new ImportCreatedEvent(importMetadata.getId(), content)
+        );
 
         return new ImportResponse(importMetadata.getId(), importMetadata.getFileName(), importMetadata.getStatus());
     }

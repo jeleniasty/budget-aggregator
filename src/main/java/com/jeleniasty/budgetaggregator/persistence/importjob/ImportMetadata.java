@@ -1,6 +1,6 @@
 package com.jeleniasty.budgetaggregator.persistence.importjob;
 
-import com.jeleniasty.budgetaggregator.model.ImportStatus;
+import com.jeleniasty.budgetaggregator.model.imports.ImportStatus;
 import com.jeleniasty.budgetaggregator.persistence.AuditableDocument;
 import lombok.Getter;
 import lombok.Setter;

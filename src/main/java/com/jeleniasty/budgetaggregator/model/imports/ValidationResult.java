@@ -1,4 +1,6 @@
-package com.jeleniasty.budgetaggregator.model;
+package com.jeleniasty.budgetaggregator.model.imports;
+
+import com.jeleniasty.budgetaggregator.model.TransactionDto;
 
 import java.util.List;
 

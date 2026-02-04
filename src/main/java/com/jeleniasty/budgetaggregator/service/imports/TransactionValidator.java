@@ -2,7 +2,7 @@ package com.jeleniasty.budgetaggregator.service.imports;
 
 import com.jeleniasty.budgetaggregator.model.TransactionDto;
 import com.jeleniasty.budgetaggregator.model.TransactionType;
-import com.jeleniasty.budgetaggregator.model.ValidationResult;
+import com.jeleniasty.budgetaggregator.model.imports.ValidationResult;
 import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.NamedCsvRecord;
 import lombok.extern.slf4j.Slf4j;

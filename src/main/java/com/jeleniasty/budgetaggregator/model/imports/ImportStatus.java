@@ -1,4 +1,4 @@
-package com.jeleniasty.budgetaggregator.model;
+package com.jeleniasty.budgetaggregator.model.imports;
 
 public enum ImportStatus {
     COMPLETED,

@@ -1,6 +1,6 @@
 package com.jeleniasty.budgetaggregator.model.events;
 
-import com.jeleniasty.budgetaggregator.model.ImportStatus;
+import com.jeleniasty.budgetaggregator.model.imports.ImportStatus;
 
 import java.util.List;
 

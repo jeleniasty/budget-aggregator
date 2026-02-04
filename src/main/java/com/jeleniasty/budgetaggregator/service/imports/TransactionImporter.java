@@ -1,6 +1,6 @@
 package com.jeleniasty.budgetaggregator.service.imports;
 
-import com.jeleniasty.budgetaggregator.model.ImportStatus;
+import com.jeleniasty.budgetaggregator.model.imports.ImportStatus;
 import com.jeleniasty.budgetaggregator.model.TransactionDto;
 import com.jeleniasty.budgetaggregator.model.events.ImportStatusUpdateEvent;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +12,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.jeleniasty.budgetaggregator.model.ImportStatus.COMPLETED;
-import static com.jeleniasty.budgetaggregator.model.ImportStatus.FAILED;
-import static com.jeleniasty.budgetaggregator.model.ImportStatus.PARTIALLY_COMPLETED;
+import static com.jeleniasty.budgetaggregator.model.imports.ImportStatus.COMPLETED;
+import static com.jeleniasty.budgetaggregator.model.imports.ImportStatus.FAILED;
+import static com.jeleniasty.budgetaggregator.model.imports.ImportStatus.PARTIALLY_COMPLETED;
 
 @Service
 @RequiredArgsConstructor

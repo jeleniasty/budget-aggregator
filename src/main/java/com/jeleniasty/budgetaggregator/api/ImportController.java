@@ -1,7 +1,7 @@
 package com.jeleniasty.budgetaggregator.api;
 
-import com.jeleniasty.budgetaggregator.model.ImportDetailsDto;
-import com.jeleniasty.budgetaggregator.model.ImportResponse;
+import com.jeleniasty.budgetaggregator.model.imports.ImportDetailsDto;
+import com.jeleniasty.budgetaggregator.model.imports.ImportResponse;
 import com.jeleniasty.budgetaggregator.service.imports.ImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
