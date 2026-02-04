@@ -78,14 +78,13 @@ public class TransactionAggregator {
             groupStage = groupStage.first("iban").as("encryptedIban");
         }
 
-        ProjectionOperation finalProject = Aggregation.project("inflow", "outflow", "transactionCount", "category")
+        ProjectionOperation finalProject = Aggregation.project("inflow", "outflow", "transactionCount")
                 .and("_id").as("currency")
                 .and("encryptedIban").as("iban")
                 .and(
-                        DateOperators.dateOf("anyDate").toString("%Y-%m")
+                        DateOperators.dateOf("monthDate").toString("%Y-%m")
                 ).as("month")
-                .andExpression("inflow - outflow").as("balance")
-                .andExclude("_id");
+                .andExpression("inflow - outflow").as("balance");
 
         SortOperation sortStage = pageable.getSort().isSorted()
                 ? Aggregation.sort(pageable.getSort())
@@ -109,7 +108,7 @@ public class TransactionAggregator {
 
         return results.stream()
                 .map(result -> new AggregationSummary(
-                        result.category(),
+                        params.category() != null ? result.category() : null,
                         params.iban() != null ? encryptionService.decrypt(result.iban()) : null,
                         params.month() != null ? result.month() : null,
                         result.currency(),
