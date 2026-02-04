@@ -2,7 +2,7 @@ package com.jeleniasty.budgetaggregator.api;
 
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationParameters;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationSummary;
-import com.jeleniasty.budgetaggregator.service.TransactionAggregator;
+import com.jeleniasty.budgetaggregator.service.aggregator.TransactionAggregator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;

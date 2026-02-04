@@ -1,4 +1,4 @@
-package com.jeleniasty.budgetaggregator.service;
+package com.jeleniasty.budgetaggregator.service.imports;
 
 import com.jeleniasty.budgetaggregator.model.TransactionDto;
 import com.jeleniasty.budgetaggregator.model.TransactionType;

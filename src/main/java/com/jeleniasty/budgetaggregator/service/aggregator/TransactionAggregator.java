@@ -1,9 +1,11 @@
-package com.jeleniasty.budgetaggregator.service;
+package com.jeleniasty.budgetaggregator.service.aggregator;
 
 import com.jeleniasty.budgetaggregator.model.TransactionType;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationParameters;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationRaw;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationSummary;
+import com.jeleniasty.budgetaggregator.service.aggregator.filter.FilterProvider;
+import com.jeleniasty.budgetaggregator.service.shared.EncryptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,11 +19,6 @@ import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalTime;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,26 +28,14 @@ public class TransactionAggregator {
 
     private final MongoTemplate mongoTemplate;
     private final EncryptionService encryptionService;
+    private final List<FilterProvider> filterProviders;
 
     public List<AggregationSummary> aggregate(AggregationParameters params) {
 
-        List<Criteria> filters = new ArrayList<>();
-
-        Optional.ofNullable(params.iban())
-                .map(encryptionService::generateBlindIndex)
-                .ifPresent(hash -> filters.add(Criteria.where("ibanHash").is(hash)));
-
-        Optional.ofNullable(params.category())
-                .ifPresent(c -> filters.add(Criteria.where("category").is(c)));
-
-        if (params.month() != null) {
-            YearMonth ym = YearMonth.parse(params.month());
-
-            Instant start = ym.atDay(1).atStartOfDay(ZoneOffset.UTC).toInstant();
-            Instant end = ym.atEndOfMonth().atTime(LocalTime.MAX).atOffset(ZoneOffset.UTC).toInstant();
-
-            filters.add(Criteria.where("transactionDate").gte(start).lte(end));
-        }
+        List<Criteria> filters = filterProviders.stream()
+                .map(f -> f.build(params))
+                .flatMap(Optional::stream)
+                .toList();
 
         MatchOperation matchStage = Aggregation.match(
                 filters.isEmpty()

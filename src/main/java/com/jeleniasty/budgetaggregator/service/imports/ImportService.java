@@ -7,7 +7,6 @@ import com.jeleniasty.budgetaggregator.model.ImportStatus;
 import com.jeleniasty.budgetaggregator.model.events.ImportStatusUpdateEvent;
 import com.jeleniasty.budgetaggregator.persistence.importjob.ImportMetadata;
 import com.jeleniasty.budgetaggregator.persistence.importjob.ImportMetadataRepository;
-import com.jeleniasty.budgetaggregator.service.TransactionImporter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

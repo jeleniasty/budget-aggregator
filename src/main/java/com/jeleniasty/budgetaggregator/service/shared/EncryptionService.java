@@ -1,4 +1,4 @@
-package com.jeleniasty.budgetaggregator.service;
+package com.jeleniasty.budgetaggregator.service.shared;
 
 import com.jeleniasty.budgetaggregator.exception.EncryptionException;
 import lombok.RequiredArgsConstructor;

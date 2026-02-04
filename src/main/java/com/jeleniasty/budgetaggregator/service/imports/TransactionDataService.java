@@ -1,7 +1,8 @@
-package com.jeleniasty.budgetaggregator.service;
+package com.jeleniasty.budgetaggregator.service.imports;
 
 import com.jeleniasty.budgetaggregator.model.TransactionDto;
 import com.jeleniasty.budgetaggregator.persistence.transaction.Transaction;
+import com.jeleniasty.budgetaggregator.service.shared.EncryptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
