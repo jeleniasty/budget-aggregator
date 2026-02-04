@@ -1,0 +1,28 @@
+meta {
+  name: transaction stats
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/transactions/stats
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+  //   "category": "Transport"
+  //   "iban": "GB18RABO12345678901234",
+  //   "month": "2026-01"
+  }
+}
+
+body:multipart-form {
+  file: @file(C:\Users\micha\Downloads\transactions.csv)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
