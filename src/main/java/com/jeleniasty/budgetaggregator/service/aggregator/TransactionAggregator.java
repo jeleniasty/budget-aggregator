@@ -1,0 +1,67 @@
+package com.jeleniasty.budgetaggregator.service.aggregator;
+
+import com.jeleniasty.budgetaggregator.model.aggregation.AggregationParameters;
+import com.jeleniasty.budgetaggregator.model.aggregation.AggregationRaw;
+import com.jeleniasty.budgetaggregator.model.aggregation.AggregationSummary;
+import com.jeleniasty.budgetaggregator.service.aggregator.aggregation.AggregationStrategy;
+import com.jeleniasty.budgetaggregator.service.aggregator.filter.FilterProvider;
+import com.jeleniasty.budgetaggregator.service.aggregator.mapper.AggregationSummaryMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.jeleniasty.budgetaggregator.persistence.transaction.Transaction.TRANSACTIONS_DOCUMENT;
+
+@Service
+@RequiredArgsConstructor
+public class TransactionAggregator {
+
+    private final MongoTemplate mongoTemplate;
+    private final List<FilterProvider> filterProviders;
+    private final AggregationSummaryMapper mapper;
+    private final Map<String, AggregationStrategy> aggregationStrategies;
+
+    public List<AggregationSummary> aggregate(AggregationParameters params) {
+
+        List<Criteria> filters = filterProviders.stream()
+                .map(f -> f.build(params))
+                .flatMap(Optional::stream)
+                .toList();
+
+        MatchOperation matchStage = Aggregation.match(
+                filters.isEmpty()
+                        ? new Criteria()
+                        : new Criteria().andOperator(filters.toArray(new Criteria[0]))
+        );
+
+        var aggregationStrategy = aggregationStrategies.get("currencyAggregationStrategy");
+        var groupStage = aggregationStrategy.buildGroup(params);
+        var projectionStage = aggregationStrategy.buildProjection(params);
+        var sortStage = aggregationStrategy.buildSort(params);
+
+        var aggregation = Aggregation.newAggregation(
+                matchStage,
+                groupStage,
+                projectionStage,
+                sortStage
+        ).withOptions(
+                Aggregation.newAggregationOptions()
+                        .allowDiskUse(true)
+                        .build()
+        );
+
+        var results = mongoTemplate.aggregate(aggregation, TRANSACTIONS_DOCUMENT, AggregationRaw.class)
+                .getMappedResults();
+
+        return results.stream()
+                .map(result -> mapper.map(result, params))
+                .toList();
+    }
+}

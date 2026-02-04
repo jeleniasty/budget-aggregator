@@ -1,0 +1,20 @@
+meta {
+  name: import
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/transactions/imports
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(C:\Users\micha\Downloads\transactions.csv)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
