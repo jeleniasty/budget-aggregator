@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: budget-aggregator
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+  jackson:
+    default-property-inclusion: non_null
+  threads:
+    virtual:
+      enabled: true
+  data:
+    mongodb:
+      auto-index-creation: true
+  mongodb:
+    uri: mongodb://localhost:27017/budget_aggregator
+security:
+  encryption:
+    aes:
+      # ⚠ WARNING: This is a development AES-256 key.
+      # Replace with a secure, production-grade key in PROD!
+      key: "m1U8gZb3i+Yw3fEoKX+e9NwQhR3L2lJx7xV6y5J0q2A="
+    hmac:
+      # ⚠ WARNING: This is a development HMAC-SHA256 key.
+      # Replace with a secure, production-grade key in PROD!
+      key: "N7Y9mUuO8z3W1XGv+J/R2kbS5VpL6qY9M2D5c8E1T0w9G3J4K7L0P2Q5W8Z1X3V6B9N0M2Q5W8Z1X3V6B9N0M2Q5W8Z1X3V6B9N0M2Q5W8Z1X3V6B9N0M2Q5W8Z1X3V6"
