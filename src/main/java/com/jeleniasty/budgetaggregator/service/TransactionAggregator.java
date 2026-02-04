@@ -5,7 +5,6 @@ import com.jeleniasty.budgetaggregator.model.aggregation.AggregationParameters;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationRaw;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationSummary;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
