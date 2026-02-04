@@ -36,7 +36,8 @@ docker compose up --build
 - Swagger/OpenAPI docs: http://localhost:8080/swagger-ui/index.html
 
 ## 3. CSV Format
-
+Project contains example csv file for testing [src/main/resources/transactions.csv]
+CSV format should be as follows:
 ```csv
 Bank,Reference number,IBAN,Date,Currency,Category,Transaction type,Amount
 Global Bank,TXN-001,DE89370400440532013000,2026-02-03T19:15:00Z,EUR,Groceries,DEBIT,45.50
