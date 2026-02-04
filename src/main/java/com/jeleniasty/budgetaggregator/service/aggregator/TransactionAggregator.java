@@ -5,7 +5,7 @@ import com.jeleniasty.budgetaggregator.model.aggregation.AggregationParameters;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationRaw;
 import com.jeleniasty.budgetaggregator.model.aggregation.AggregationSummary;
 import com.jeleniasty.budgetaggregator.service.aggregator.filter.FilterProvider;
-import com.jeleniasty.budgetaggregator.service.shared.EncryptionService;
+import com.jeleniasty.budgetaggregator.service.aggregator.mapper.AggregationSummaryMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,8 +27,8 @@ import java.util.Optional;
 public class TransactionAggregator {
 
     private final MongoTemplate mongoTemplate;
-    private final EncryptionService encryptionService;
     private final List<FilterProvider> filterProviders;
+    private final AggregationSummaryMapper mapper;
 
     public List<AggregationSummary> aggregate(AggregationParameters params) {
 
@@ -87,16 +87,7 @@ public class TransactionAggregator {
                 .getMappedResults();
 
         return results.stream()
-                .map(result -> new AggregationSummary(
-                        params.category() != null ? result.category() : null,
-                        params.iban() != null ? encryptionService.decrypt(result.iban()) : null,
-                        params.month() != null ? result.month() : null,
-                        result.currency(),
-                        result.inflow(),
-                        result.outflow(),
-                        result.balance(),
-                        result.transactionCount()
-                ))
+                .map(result -> mapper.map(result, params))
                 .toList();
     }
 }
