@@ -33,7 +33,7 @@ public class TransactionAggregator {
     private final MongoTemplate mongoTemplate;
     private final EncryptionService encryptionService;
 
-    public List<AggregationSummary> aggregate(AggregationParameters params, Pageable pageable) {
+    public List<AggregationSummary> aggregate(AggregationParameters params) {
 
         List<Criteria> filters = new ArrayList<>();
 
@@ -86,17 +86,13 @@ public class TransactionAggregator {
                 ).as("month")
                 .andExpression("inflow - outflow").as("balance");
 
-        SortOperation sortStage = pageable.getSort().isSorted()
-                ? Aggregation.sort(pageable.getSort())
-                : Aggregation.sort(Sort.Direction.DESC, "currency");
+        SortOperation sortStage = Aggregation.sort(Sort.Direction.DESC, "currency");
 
         Aggregation aggregation = Aggregation.newAggregation(
                 matchStage,
                 groupStage,
                 finalProject,
-                sortStage,
-                Aggregation.skip(pageable.getOffset()),
-                Aggregation.limit(pageable.getPageSize())
+                sortStage
         ).withOptions(
                 Aggregation.newAggregationOptions()
                         .allowDiskUse(true)
