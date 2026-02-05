@@ -141,7 +141,7 @@ class TransactionImporterTest {
     }
 
     @Test
-    void shouldHandleCriticalException_andPublishFailed() throws Exception {
+    void shouldHandleCriticalException_andPublishFailed() {
         String importId = "imp4";
         InputStream input = new ByteArrayInputStream("dummy".getBytes());
 
@@ -161,7 +161,7 @@ class TransactionImporterTest {
     }
 
     @Test
-    void shouldSplitIntoBatches_whenLargeNumberOfTransactions() throws Exception {
+    void shouldSplitIntoBatches_whenLargeNumberOfTransactions() {
         String importId = "imp5";
         InputStream input = new ByteArrayInputStream("dummy".getBytes());
 
