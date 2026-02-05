@@ -39,7 +39,8 @@ public class CurrencyAggregationStrategy implements AggregationStrategy{
                 .sum(debitExpression).as("outflow")
                 .count().as("transactionCount")
                 .first(CATEGORY).as(CATEGORY)
-                .first(TRANSACTION_DATE).as("monthDate");
+                .first(TRANSACTION_DATE).as("monthDate")
+                .first(IBAN).as(IBAN);
 
         if (params.iban() != null) {
             group = group.first(IBAN).as(IBAN);
